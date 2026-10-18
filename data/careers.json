@@ -1,0 +1,322 @@
+{
+  "_note": "Indicative figures for guidance only (monthly INR, rural/semi-urban India). Verify on the linked official source before deciding.",
+  "baseline": {
+    "id": "regular_degree",
+    "title": "Regular B.A. / B.Sc. degree (no specific skill)",
+    "title_hi": "सामान्य बी.ए. / बी.एससी. डिग्री (बिना खास कौशल)",
+    "kamai": { "earn_from_month": 42, "cost_inr": 60000, "early_income": 9000, "salary_min": 12000, "salary_max": 20000 }
+  },
+  "careers": [
+    {
+      "id": "electrician", "title": "Electrician", "title_hi": "इलेक्ट्रीशियन", "sector": "energy", "vocational": true, "stem": true, "risk": "low",
+      "skills": ["electrical_repair", "tool_handling", "motor_pump_repair", "mental_math"],
+      "next": ["solar_technician", "ev_technician"],
+      "steps": [
+        { "title": "ITI Electrician trade (after Class 10)", "title_hi": "आईटीआई इलेक्ट्रीशियन ट्रेड (10वीं के बाद)", "months": 24 },
+        { "title": "Apprenticeship with stipend (NAPS)", "title_hi": "स्टाइपेंड के साथ अप्रेंटिसशिप (NAPS)", "months": 12 },
+        { "title": "Licensed wireman / electrician job", "title_hi": "लाइसेंसधारी वायरमैन / इलेक्ट्रीशियन की नौकरी", "months": 0 }
+      ],
+      "exams": ["State ITI admission", "NCVT All India Trade Test"],
+      "kamai": { "earn_from_month": 24, "cost_inr": 10000, "early_income": 7000, "salary_min": 12000, "salary_max": 22000 },
+      "source": { "label": "DGT – ITI trades; Apprenticeship India", "url": "https://www.apprenticeshipindia.gov.in" }
+    },
+    {
+      "id": "solar_technician", "title": "Solar PV Technician (Suryamitra)", "title_hi": "सोलर तकनीशियन (सूर्यमित्र)", "sector": "energy", "vocational": true, "stem": true, "risk": "low",
+      "skills": ["electrical_repair", "tool_handling", "motor_pump_repair"],
+      "next": ["solar_entrepreneur"],
+      "steps": [
+        { "title": "Suryamitra solar course (free, ~3 months)", "title_hi": "सूर्यमित्र सोलर कोर्स (मुफ़्त, ~3 महीने)", "months": 3 },
+        { "title": "Installer job – rooftop solar & solar pumps", "title_hi": "इंस्टॉलर नौकरी – छत सोलर और सोलर पंप", "months": 0 }
+      ],
+      "exams": [],
+      "kamai": { "earn_from_month": 4, "cost_inr": 0, "early_income": 10000, "salary_min": 12000, "salary_max": 20000 },
+      "source": { "label": "National Institute of Solar Energy – Suryamitra", "url": "https://nise.res.in" }
+    },
+    {
+      "id": "solar_entrepreneur", "title": "Village Solar Installation Business", "title_hi": "गांव में सोलर इंस्टॉलेशन व्यवसाय", "sector": "energy", "vocational": true, "stem": false, "risk": "medium",
+      "skills": ["electrical_repair", "shop_selling", "bookkeeping", "communication"],
+      "next": [],
+      "steps": [
+        { "title": "Work 1–2 years as solar installer", "title_hi": "1–2 साल सोलर इंस्टॉलर के रूप में काम", "months": 18 },
+        { "title": "Register as vendor (PM Surya Ghar / PM-KUSUM)", "title_hi": "वेंडर पंजीकरण (पीएम सूर्य घर / पीएम-कुसुम)", "months": 2 },
+        { "title": "Start business with MUDRA loan", "title_hi": "मुद्रा लोन से व्यवसाय शुरू करें", "months": 0 }
+      ],
+      "exams": [],
+      "kamai": { "earn_from_month": 4, "cost_inr": 50000, "early_income": 10000, "salary_min": 20000, "salary_max": 45000 },
+      "source": { "label": "PM Surya Ghar portal", "url": "https://pmsuryaghar.gov.in" }
+    },
+    {
+      "id": "farm_mechanic", "title": "Farm Machinery & Pump Mechanic", "title_hi": "कृषि मशीनरी व पंप मैकेनिक", "sector": "agri-tech", "vocational": true, "stem": true, "risk": "low",
+      "skills": ["motor_pump_repair", "vehicle_repair", "tool_handling", "crop_farming"],
+      "next": ["drone_operator", "ev_technician"],
+      "steps": [
+        { "title": "ITI Mechanic Agricultural Machinery", "title_hi": "आईटीआई मैकेनिक कृषि मशीनरी", "months": 24 },
+        { "title": "Apprenticeship at tractor / pump dealer", "title_hi": "ट्रैक्टर / पंप डीलर पर अप्रेंटिसशिप", "months": 12 },
+        { "title": "Service mechanic or own repair workshop", "title_hi": "सर्विस मैकेनिक या खुद की वर्कशॉप", "months": 0 }
+      ],
+      "exams": ["State ITI admission"],
+      "kamai": { "earn_from_month": 24, "cost_inr": 10000, "early_income": 7000, "salary_min": 12000, "salary_max": 20000 },
+      "source": { "label": "DGT – ITI trades", "url": "https://dgt.gov.in" }
+    },
+    {
+      "id": "drone_operator", "title": "Agri-Drone Pilot (crop spraying)", "title_hi": "कृषि ड्रोन पायलट (फसल छिड़काव)", "sector": "agri-tech", "vocational": true, "stem": true, "risk": "medium",
+      "skills": ["smartphone_use", "crop_farming", "tool_handling"],
+      "next": [],
+      "steps": [
+        { "title": "Class 10 pass + DGCA-approved drone pilot training (~1 week)", "title_hi": "10वीं पास + DGCA मान्य ड्रोन पायलट प्रशिक्षण (~1 सप्ताह)", "months": 1 },
+        { "title": "Remote Pilot Certificate", "title_hi": "रिमोट पायलट सर्टिफिकेट", "months": 1 },
+        { "title": "Spraying service for farmers / FPOs (Namo Drone Didi for women SHGs)", "title_hi": "किसानों / FPO के लिए छिड़काव सेवा (महिला SHG हेतु नमो ड्रोन दीदी)", "months": 0 }
+      ],
+      "exams": ["DGCA Remote Pilot test"],
+      "kamai": { "earn_from_month": 2, "cost_inr": 45000, "early_income": 12000, "salary_min": 15000, "salary_max": 30000 },
+      "source": { "label": "DGCA Digital Sky", "url": "https://digitalsky.dgca.gov.in" }
+    },
+    {
+      "id": "ev_technician", "title": "Electric Vehicle (EV) Service Technician", "title_hi": "इलेक्ट्रिक वाहन (EV) सर्विस तकनीशियन", "sector": "auto", "vocational": true, "stem": true, "risk": "low",
+      "skills": ["vehicle_repair", "electrical_repair", "tool_handling"],
+      "next": [],
+      "steps": [
+        { "title": "Short EV technician course (Skill India, ~3 months)", "title_hi": "EV तकनीशियन शॉर्ट कोर्स (स्किल इंडिया, ~3 महीने)", "months": 3 },
+        { "title": "Job at e-rickshaw / EV scooter service centre", "title_hi": "ई-रिक्शा / EV स्कूटर सर्विस सेंटर में नौकरी", "months": 0 }
+      ],
+      "exams": [],
+      "kamai": { "earn_from_month": 4, "cost_inr": 0, "early_income": 9000, "salary_min": 12000, "salary_max": 22000 },
+      "source": { "label": "Skill India Digital", "url": "https://www.skillindiadigital.gov.in" }
+    },
+    {
+      "id": "mobile_repair", "title": "Mobile Phone Repair Technician", "title_hi": "मोबाइल फ़ोन रिपेयर तकनीशियन", "sector": "electronics", "vocational": true, "stem": true, "risk": "low",
+      "skills": ["phone_repair", "smartphone_use", "tool_handling", "shop_selling"],
+      "next": [],
+      "steps": [
+        { "title": "Field Technician course (PMKVY, free, ~3 months)", "title_hi": "फील्ड तकनीशियन कोर्स (PMKVY, मुफ़्त, ~3 महीने)", "months": 3 },
+        { "title": "Job at repair shop, then own shop", "title_hi": "रिपेयर दुकान पर नौकरी, फिर खुद की दुकान", "months": 0 }
+      ],
+      "exams": [],
+      "kamai": { "earn_from_month": 3, "cost_inr": 0, "early_income": 7000, "salary_min": 10000, "salary_max": 20000 },
+      "source": { "label": "Skill India Digital – PMKVY", "url": "https://www.skillindiadigital.gov.in" }
+    },
+    {
+      "id": "accounts_assistant", "title": "Accounts Assistant (Tally & GST)", "title_hi": "अकाउंट्स असिस्टेंट (टैली और जीएसटी)", "sector": "finance", "vocational": true, "stem": false, "risk": "low",
+      "skills": ["bookkeeping", "mental_math", "computer_basics"],
+      "next": ["bank_mitra", "fpo_manager"],
+      "steps": [
+        { "title": "Accounts Assistant course (NSQF Level 4, ~4 months)", "title_hi": "अकाउंट्स असिस्टेंट कोर्स (NSQF स्तर 4, ~4 महीने)", "months": 4 },
+        { "title": "Job at shop, CA office, cooperative or FPO", "title_hi": "दुकान, CA ऑफिस, सहकारी समिति या FPO में नौकरी", "months": 0 }
+      ],
+      "exams": [],
+      "kamai": { "earn_from_month": 5, "cost_inr": 5000, "early_income": 9000, "salary_min": 10000, "salary_max": 18000 },
+      "source": { "label": "National Qualifications Register", "url": "https://nqr.gov.in" }
+    },
+    {
+      "id": "bank_mitra", "title": "Bank Mitra / Banking Correspondent", "title_hi": "बैंक मित्र / बैंकिंग करेस्पोंडेंट", "sector": "finance", "vocational": true, "stem": false, "risk": "medium",
+      "skills": ["cash_handling", "bookkeeping", "smartphone_use", "communication"],
+      "next": ["fpo_manager"],
+      "steps": [
+        { "title": "IIBF Business Correspondent certificate exam", "title_hi": "IIBF बिजनेस करेस्पोंडेंट सर्टिफिकेट परीक्षा", "months": 2 },
+        { "title": "Tie up with a bank or CSC as village banking point", "title_hi": "बैंक या CSC से जुड़कर गांव में बैंकिंग केंद्र", "months": 1 }
+      ],
+      "exams": ["IIBF BC/BF exam"],
+      "kamai": { "earn_from_month": 3, "cost_inr": 5000, "early_income": 6000, "salary_min": 8000, "salary_max": 20000 },
+      "source": { "label": "Indian Institute of Banking & Finance", "url": "https://www.iibf.org.in" }
+    },
+    {
+      "id": "fpo_manager", "title": "Farmer Producer Organisation (FPO) Manager", "title_hi": "किसान उत्पादक संगठन (FPO) प्रबंधक", "sector": "agri-business", "vocational": true, "stem": false, "risk": "medium",
+      "skills": ["bookkeeping", "crop_farming", "leadership", "communication"],
+      "next": [],
+      "steps": [
+        { "title": "Work as FPO accountant / field staff", "title_hi": "FPO में अकाउंटेंट / फील्ड स्टाफ के रूप में काम", "months": 12 },
+        { "title": "FPO CEO training (SFAC / NABARD)", "title_hi": "FPO CEO प्रशिक्षण (SFAC / NABARD)", "months": 3 },
+        { "title": "FPO CEO / business manager", "title_hi": "FPO CEO / व्यवसाय प्रबंधक", "months": 0 }
+      ],
+      "exams": [],
+      "kamai": { "earn_from_month": 2, "cost_inr": 0, "early_income": 9000, "salary_min": 15000, "salary_max": 30000 },
+      "source": { "label": "SFAC – FPO scheme", "url": "https://sfacindia.com" }
+    },
+    {
+      "id": "paravet", "title": "Para-vet / Pashu Sakhi (livestock health worker)", "title_hi": "पैरा-वेट / पशु सखी (पशु स्वास्थ्य कार्यकर्ता)", "sector": "livestock", "vocational": true, "stem": true, "risk": "low",
+      "skills": ["animal_care", "milk_handling", "first_aid"],
+      "next": ["dairy_entrepreneur"],
+      "steps": [
+        { "title": "Pashu Sakhi / A-HELP or para-vet training", "title_hi": "पशु सखी / ए-हेल्प या पैरा-वेट प्रशिक्षण", "months": 3 },
+        { "title": "Vaccination, first aid & breeding services in villages", "title_hi": "गांवों में टीकाकरण, प्राथमिक उपचार व प्रजनन सेवा", "months": 0 }
+      ],
+      "exams": [],
+      "kamai": { "earn_from_month": 3, "cost_inr": 0, "early_income": 5000, "salary_min": 8000, "salary_max": 18000 },
+      "source": { "label": "Dept. of Animal Husbandry & Dairying", "url": "https://dahd.gov.in" }
+    },
+    {
+      "id": "dairy_entrepreneur", "title": "Dairy Farm Entrepreneur", "title_hi": "डेयरी फार्म उद्यमी", "sector": "livestock", "vocational": true, "stem": false, "risk": "medium",
+      "skills": ["animal_care", "milk_handling", "bookkeeping", "shop_selling"],
+      "next": [],
+      "steps": [
+        { "title": "Dairy farmer / entrepreneur course (NSQF)", "title_hi": "डेयरी किसान / उद्यमी कोर्स (NSQF)", "months": 2 },
+        { "title": "Loan for 2–3 animals (KCC / MUDRA) + join milk cooperative", "title_hi": "2–3 पशुओं हेतु लोन (KCC / मुद्रा) + दुग्ध सहकारी से जुड़ें", "months": 2 }
+      ],
+      "exams": [],
+      "kamai": { "earn_from_month": 4, "cost_inr": 80000, "early_income": 6000, "salary_min": 12000, "salary_max": 30000 },
+      "source": { "label": "Dept. of Animal Husbandry & Dairying", "url": "https://dahd.gov.in" }
+    },
+    {
+      "id": "tailoring_business", "title": "Tailoring & Boutique Business", "title_hi": "सिलाई व बुटीक व्यवसाय", "sector": "apparel", "vocational": true, "stem": false, "risk": "low",
+      "skills": ["sewing", "drawing_art", "shop_selling"],
+      "next": ["fashion_designer"],
+      "steps": [
+        { "title": "Sewing Machine Operator course (PMKVY, free, ~3 months)", "title_hi": "सिलाई मशीन ऑपरेटर कोर्स (PMKVY, मुफ़्त, ~3 महीने)", "months": 3 },
+        { "title": "Garment unit job or home orders", "title_hi": "गारमेंट यूनिट में नौकरी या घर से ऑर्डर", "months": 0 },
+        { "title": "Own boutique with MUDRA loan", "title_hi": "मुद्रा लोन से खुद का बुटीक", "months": 0 }
+      ],
+      "exams": [],
+      "kamai": { "earn_from_month": 3, "cost_inr": 0, "early_income": 8000, "salary_min": 9000, "salary_max": 20000 },
+      "source": { "label": "Skill India Digital – PMKVY", "url": "https://www.skillindiadigital.gov.in" }
+    },
+    {
+      "id": "fashion_designer", "title": "Fashion Designer", "title_hi": "फैशन डिज़ाइनर", "sector": "design", "vocational": false, "stem": false, "risk": "medium",
+      "skills": ["drawing_art", "sewing", "smartphone_use"],
+      "next": [],
+      "steps": [
+        { "title": "Class 12 (any stream)", "title_hi": "12वीं (कोई भी स्ट्रीम)", "months": 24 },
+        { "title": "Fashion design diploma / NIFT B.Des", "title_hi": "फैशन डिज़ाइन डिप्लोमा / NIFT बी.डेस", "months": 36 }
+      ],
+      "exams": ["NIFT entrance", "NID DAT"],
+      "kamai": { "earn_from_month": 60, "cost_inr": 150000, "early_income": 15000, "salary_min": 18000, "salary_max": 40000 },
+      "source": { "label": "NIFT", "url": "https://www.nift.ac.in" }
+    },
+    {
+      "id": "beautician", "title": "Beautician / Home Salon", "title_hi": "ब्यूटीशियन / होम सैलून", "sector": "wellness", "vocational": true, "stem": false, "risk": "low",
+      "skills": ["beauty_care", "communication", "shop_selling"],
+      "next": [],
+      "steps": [
+        { "title": "Assistant Beauty Therapist course (PMKVY, free, ~3 months)", "title_hi": "असिस्टेंट ब्यूटी थेरेपिस्ट कोर्स (PMKVY, मुफ़्त, ~3 महीने)", "months": 3 },
+        { "title": "Salon job, then home salon / bridal orders", "title_hi": "सैलून नौकरी, फिर होम सैलून / शादी के ऑर्डर", "months": 0 }
+      ],
+      "exams": [],
+      "kamai": { "earn_from_month": 3, "cost_inr": 0, "early_income": 7000, "salary_min": 9000, "salary_max": 20000 },
+      "source": { "label": "Skill India Digital – PMKVY", "url": "https://www.skillindiadigital.gov.in" }
+    },
+    {
+      "id": "tour_guide", "title": "Local Tour Guide & Homestay Host", "title_hi": "स्थानीय टूर गाइड व होमस्टे होस्ट", "sector": "tourism", "vocational": true, "stem": false, "risk": "medium",
+      "skills": ["local_guiding", "cooking", "communication", "storytelling"],
+      "next": [],
+      "steps": [
+        { "title": "Incredible India Tourist Facilitator certificate (online)", "title_hi": "इनक्रेडिबल इंडिया टूरिस्ट फैसिलिटेटर सर्टिफिकेट (ऑनलाइन)", "months": 2 },
+        { "title": "Register homestay / guide with state tourism", "title_hi": "राज्य पर्यटन विभाग में होमस्टे / गाइड पंजीकरण", "months": 1 }
+      ],
+      "exams": [],
+      "kamai": { "earn_from_month": 3, "cost_inr": 5000, "early_income": 5000, "salary_min": 8000, "salary_max": 25000 },
+      "source": { "label": "Ministry of Tourism", "url": "https://tourism.gov.in" }
+    },
+    {
+      "id": "commis_chef", "title": "Commis Chef (hotel & canteen kitchens)", "title_hi": "कमिस शेफ (होटल व कैंटीन रसोई)", "sector": "hospitality", "vocational": true, "stem": false, "risk": "low",
+      "skills": ["cooking", "physical_fitness", "communication"],
+      "next": ["tour_guide"],
+      "steps": [
+        { "title": "Commis Chef / Food Production course (free, ~4 months)", "title_hi": "कमिस शेफ / फूड प्रोडक्शन कोर्स (मुफ़्त, ~4 महीने)", "months": 4 },
+        { "title": "Hotel, highway dhaba chain or industrial canteen job", "title_hi": "होटल, ढाबा चेन या औद्योगिक कैंटीन में नौकरी", "months": 0 }
+      ],
+      "exams": [],
+      "kamai": { "earn_from_month": 4, "cost_inr": 0, "early_income": 9000, "salary_min": 12000, "salary_max": 25000 },
+      "source": { "label": "Skill India Digital", "url": "https://www.skillindiadigital.gov.in" }
+    },
+    {
+      "id": "anm_nurse", "title": "ANM Nurse (village health)", "title_hi": "एएनएम नर्स (गांव स्वास्थ्य)", "sector": "health", "vocational": true, "stem": true, "risk": "low",
+      "skills": ["caregiving", "first_aid", "communication"],
+      "next": [],
+      "steps": [
+        { "title": "Class 12 (any stream)", "title_hi": "12वीं (कोई भी स्ट्रीम)", "months": 24 },
+        { "title": "ANM diploma (2 years)", "title_hi": "एएनएम डिप्लोमा (2 साल)", "months": 24 },
+        { "title": "Health sub-centre / hospital job", "title_hi": "स्वास्थ्य उपकेंद्र / अस्पताल में नौकरी", "months": 0 }
+      ],
+      "exams": ["State ANM/GNM entrance"],
+      "kamai": { "earn_from_month": 48, "cost_inr": 60000, "early_income": 12000, "salary_min": 15000, "salary_max": 30000 },
+      "source": { "label": "Indian Nursing Council", "url": "https://www.indiannursingcouncil.org" }
+    },
+    {
+      "id": "agniveer_police", "title": "Agniveer / State Police Constable", "title_hi": "अग्निवीर / राज्य पुलिस कांस्टेबल", "sector": "defence", "vocational": false, "stem": false, "risk": "medium",
+      "skills": ["physical_fitness", "leadership", "communication"],
+      "next": [],
+      "steps": [
+        { "title": "Physical training & exam preparation", "title_hi": "शारीरिक प्रशिक्षण व परीक्षा तैयारी", "months": 9 },
+        { "title": "Agniveer CEE / state constable exam", "title_hi": "अग्निवीर CEE / राज्य कांस्टेबल परीक्षा", "months": 3 },
+        { "title": "Paid training and posting", "title_hi": "वेतन सहित प्रशिक्षण व पोस्टिंग", "months": 0 }
+      ],
+      "exams": ["Agniveer CEE", "State Police Constable exam"],
+      "kamai": { "earn_from_month": 12, "cost_inr": 5000, "early_income": 21000, "salary_min": 21000, "salary_max": 30000 },
+      "source": { "label": "Join Indian Army", "url": "https://joinindianarmy.nic.in" }
+    },
+    {
+      "id": "forest_guard", "title": "Forest Guard (Van Rakshak)", "title_hi": "वनरक्षी (फ़ॉरेस्ट गार्ड)", "sector": "environment", "vocational": false, "stem": false, "risk": "medium",
+      "skills": ["forest_knowledge", "physical_fitness", "local_guiding"],
+      "next": [],
+      "steps": [
+        { "title": "Class 12 pass", "title_hi": "12वीं पास", "months": 24 },
+        { "title": "State Forest Guard exam + physical test", "title_hi": "राज्य वनरक्षी परीक्षा + शारीरिक परीक्षण", "months": 6 },
+        { "title": "Training and posting", "title_hi": "प्रशिक्षण व पोस्टिंग", "months": 0 }
+      ],
+      "exams": ["State Forest Guard exam (e.g. JSSC)"],
+      "kamai": { "earn_from_month": 30, "cost_inr": 5000, "early_income": 25000, "salary_min": 25000, "salary_max": 35000 },
+      "source": { "label": "Jharkhand Staff Selection Commission", "url": "https://jssc.jharkhand.gov.in" }
+    },
+    {
+      "id": "primary_teacher", "title": "Primary School Teacher", "title_hi": "प्राथमिक विद्यालय शिक्षक", "sector": "education", "vocational": false, "stem": false, "risk": "low",
+      "skills": ["teaching_kids", "communication", "storytelling"],
+      "next": [],
+      "steps": [
+        { "title": "Class 12 (any stream)", "title_hi": "12वीं (कोई भी स्ट्रीम)", "months": 24 },
+        { "title": "D.El.Ed diploma (2 years)", "title_hi": "डी.एल.एड डिप्लोमा (2 साल)", "months": 24 },
+        { "title": "Clear CTET / State TET", "title_hi": "CTET / राज्य TET पास करें", "months": 6 }
+      ],
+      "exams": ["CTET", "State TET"],
+      "kamai": { "earn_from_month": 48, "cost_inr": 40000, "early_income": 10000, "salary_min": 12000, "salary_max": 45000 },
+      "source": { "label": "CTET", "url": "https://ctet.nic.in" }
+    },
+    {
+      "id": "content_creator", "title": "Local-language Content Creator & Digital Marketer", "title_hi": "स्थानीय भाषा कंटेंट क्रिएटर व डिजिटल मार्केटर", "sector": "media", "vocational": true, "stem": false, "risk": "high",
+      "skills": ["storytelling", "smartphone_use", "communication"],
+      "next": [],
+      "steps": [
+        { "title": "Free digital marketing course (Skill India Digital)", "title_hi": "मुफ़्त डिजिटल मार्केटिंग कोर्स (स्किल इंडिया डिजिटल)", "months": 2 },
+        { "title": "Build a channel in your language + market local shops", "title_hi": "अपनी भाषा में चैनल बनाएं + स्थानीय दुकानों का प्रचार करें", "months": 4 }
+      ],
+      "exams": [],
+      "kamai": { "earn_from_month": 6, "cost_inr": 3000, "early_income": 3000, "salary_min": 5000, "salary_max": 30000 },
+      "source": { "label": "Skill India Digital", "url": "https://www.skillindiadigital.gov.in" }
+    },
+    {
+      "id": "carpenter", "title": "Carpenter & Furniture Maker", "title_hi": "बढ़ई व फर्नीचर निर्माता", "sector": "construction", "vocational": true, "stem": false, "risk": "low",
+      "skills": ["woodwork", "tool_handling", "mental_math"],
+      "next": [],
+      "steps": [
+        { "title": "ITI Carpenter trade (1 year)", "title_hi": "आईटीआई कारपेंटर ट्रेड (1 साल)", "months": 12 },
+        { "title": "Work with contractor, then own workshop", "title_hi": "ठेकेदार के साथ काम, फिर खुद की वर्कशॉप", "months": 0 }
+      ],
+      "exams": ["State ITI admission"],
+      "kamai": { "earn_from_month": 12, "cost_inr": 8000, "early_income": 8000, "salary_min": 12000, "salary_max": 22000 },
+      "source": { "label": "DGT – ITI trades", "url": "https://dgt.gov.in" }
+    },
+    {
+      "id": "plumber", "title": "Plumber (Jal Jeevan Mission demand)", "title_hi": "प्लंबर (जल जीवन मिशन में मांग)", "sector": "construction", "vocational": true, "stem": false, "risk": "low",
+      "skills": ["pipe_fitting", "tool_handling", "construction_work"],
+      "next": [],
+      "steps": [
+        { "title": "ITI Plumber trade (1 year)", "title_hi": "आईटीआई प्लंबर ट्रेड (1 साल)", "months": 12 },
+        { "title": "Village water-supply / contractor job", "title_hi": "गांव जल-आपूर्ति / ठेकेदार के साथ नौकरी", "months": 0 }
+      ],
+      "exams": ["State ITI admission"],
+      "kamai": { "earn_from_month": 12, "cost_inr": 8000, "early_income": 8000, "salary_min": 12000, "salary_max": 20000 },
+      "source": { "label": "DGT – ITI trades", "url": "https://dgt.gov.in" }
+    },
+    {
+      "id": "software_developer", "title": "Software Developer", "title_hi": "सॉफ्टवेयर डेवलपर", "sector": "it", "vocational": false, "stem": true, "risk": "medium",
+      "skills": ["computer_basics", "mental_math", "smartphone_use"],
+      "next": [],
+      "steps": [
+        { "title": "Class 12 with Maths", "title_hi": "गणित के साथ 12वीं", "months": 24 },
+        { "title": "BCA / Diploma in Computer Science", "title_hi": "बीसीए / कंप्यूटर साइंस डिप्लोमा", "months": 36 },
+        { "title": "Internship, then junior developer job", "title_hi": "इंटर्नशिप, फिर जूनियर डेवलपर नौकरी", "months": 6 }
+      ],
+      "exams": ["State polytechnic / BCA entrance"],
+      "kamai": { "earn_from_month": 62, "cost_inr": 150000, "early_income": 12000, "salary_min": 18000, "salary_max": 40000 },
+      "source": { "label": "AICTE", "url": "https://www.aicte-india.org" }
+    }
+  ]
+}

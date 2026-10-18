@@ -1,0 +1,84 @@
+<%
+  const hi = (pitchLang === 'hi');
+  const L = (en, hiText) => hi ? hiText : en;
+  const inr = (n) => '₹' + Number(n).toLocaleString('en-IN');
+  const careerTitle = hi ? career.title_hi : career.title;
+  const shareText = L(
+    `A message from Yukti about ${firstName}'s future as ${career.title}. Tap to listen: ${shareUrl}`,
+    `${firstName} के भविष्य (${career.title_hi}) के बारे में एडू-सारथी का संदेश। सुनने के लिए दबाएं: ${shareUrl}`
+  );
+%>
+<%- include('partials/header', { pageTitle: L('A message for the family of ' + firstName, firstName + ' के परिवार के लिए संदेश') }) %>
+
+<style>
+  body { background: var(--surface-alt); }
+  .pitch-wrap { max-width: 560px; margin: 0 auto; padding: 1.25rem 16px 3rem; }
+  .pitch-hero { text-align: center; padding: 1.5rem 1.25rem; }
+  .play-btn { width: 100%; font-size: 1.25rem; padding: 1rem; border-radius: var(--radius-lg); margin: 1rem 0 0.5rem; }
+  .fact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 1rem; }
+  .fact { background: var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.75rem; text-align: center; }
+  .fact b { display: block; font-size: 1.15rem; color: var(--primary); }
+  .fact span { font-size: 0.8rem; color: var(--text-muted); }
+  .message-text { white-space: pre-wrap; line-height: 1.6; font-size: 0.95rem; color: var(--text-main); }
+  .wa-btn { background: #25D366; border-color: #25D366; color: #fff; }
+</style>
+
+<div class="pitch-wrap">
+  <% if (isNew) { %>
+    <div class="demo-disclaimer-pill" style="margin-bottom: 1rem;">✅ <%= L('Message ready! Share it with your parents on WhatsApp.', 'संदेश तैयार है! इसे WhatsApp पर माता-पिता को भेजें।') %></div>
+  <% } %>
+
+  <section class="card pitch-hero">
+    <div style="font-size: 2.5rem;">👨‍👩‍👧</div>
+    <h1 style="font-size: 1.3rem; font-weight: 800; margin: 0.4rem 0;"><%= L('A message about ' + firstName + "'s future", firstName + ' के भविष्य के बारे में एक संदेश') %></h1>
+    <span class="badge badge-primary"><%= careerTitle %></span>
+
+    <button type="button" class="btn btn-primary play-btn" id="play-btn">▶️ <%= L('Listen to the message', 'संदेश सुनें') %></button>
+    <button type="button" class="btn btn-sm btn-outline-primary" id="stop-btn">⏹ <%= L('Stop', 'रोकें') %></button>
+
+    <div class="fact-grid">
+      <div class="fact"><b><%= kamaiInfo.earnFromMonth %> <%= L('months', 'महीने') %></b><span><%= L('until first income', 'में पहली कमाई') %></span></div>
+      <div class="fact"><b><%= kamaiInfo.cost === 0 ? L('Free', 'मुफ़्त') : inr(kamaiInfo.cost) %></b><span><%= L('training cost', 'प्रशिक्षण खर्च') %></span></div>
+      <div class="fact" style="grid-column: span 2;"><b><%= inr(kamaiInfo.salaryMin) %> – <%= inr(kamaiInfo.salaryMax) %></b><span><%= L('monthly income later (estimate)', 'बाद में मासिक कमाई (अनुमान)') %></span></div>
+      <div class="fact" style="grid-column: span 2;"><span><%= L('A regular degree usually takes', 'सामान्य डिग्री में आमतौर पर') %> <strong><%= baseline.earnFromMonth %> <%= L('months', 'महीने') %></strong> <%= L('before the first income.', 'लगते हैं पहली कमाई तक।') %></span></div>
+    </div>
+  </section>
+
+  <section class="card" style="padding: 1.25rem; margin-top: 1rem;">
+    <h2 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem;">📝 <%= L('Message', 'संदेश') %></h2>
+    <p class="message-text" id="message-text"><%= pitch.message %></p>
+  </section>
+
+  <section style="display: grid; gap: 0.6rem; margin-top: 1rem;">
+    <a class="btn wa-btn btn-block" href="https://wa.me/?text=<%= encodeURIComponent(shareText) %>" target="_blank" rel="noopener">💬 <%= L('Share on WhatsApp', 'WhatsApp पर भेजें') %></a>
+    <button type="button" class="btn btn-outline-primary btn-block" id="copy-btn">🔗 <%= L('Copy link', 'लिंक कॉपी करें') %></button>
+    <% if (user) { %>
+      <a class="btn btn-secondary btn-block" href="/hunar#ladders">← <%= L('Back to my career paths', 'मेरे करियर रास्तों पर वापस') %></a>
+    <% } %>
+  </section>
+
+  <p style="font-size: 0.75rem; color: var(--text-light); text-align: center; margin-top: 1.25rem;">
+    <%= L('Guidance from Yukti. Figures are estimates from official sources:', 'एडू-सारथी द्वारा मार्गदर्शन। आंकड़े आधिकारिक स्रोतों पर आधारित अनुमान हैं:') %>
+    <a href="<%= career.source.url %>" target="_blank" rel="noopener"><%= career.source.label %></a>
+  </p>
+</div>
+
+<script src="/js/voice.js"></script>
+<script>
+  (function () {
+    const pitchLang = <%- JSON.stringify(pitchLang) %>;
+    const text = document.getElementById('message-text').textContent;
+    document.getElementById('play-btn').addEventListener('click', () => window.EduVoice.speak(text, pitchLang));
+    document.getElementById('stop-btn').addEventListener('click', () => window.EduVoice.stopSpeaking());
+    document.getElementById('copy-btn').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(<%- JSON.stringify(shareUrl) %>);
+        if (window.showToast) window.showToast(<%- JSON.stringify(L('Link copied', 'लिंक कॉपी हो गया')) %>, 'success');
+      } catch (err) {
+        prompt('Copy this link:', <%- JSON.stringify(shareUrl) %>);
+      }
+    });
+  })();
+</script>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,336 @@
+<%
+  const hi = (lang === 'hi');
+  const L = (en, hiText) => hi ? hiText : en;
+  const inr = (n) => '₹' + Number(n).toLocaleString('en-IN');
+  const TAGS = {
+    best: { en: '⭐ Best match', hi: '⭐ सबसे अच्छा मेल', cls: 'badge-primary' },
+    vocational: { en: '🛠️ Skill job', hi: '🛠️ हुनर वाली नौकरी', cls: 'badge-success' },
+    nonstem: { en: '🌿 Beyond science', hi: '🌿 विज्ञान से हटकर', cls: 'badge-warning' },
+    surprise: { en: '🎲 Surprise', hi: '🎲 सरप्राइज़', cls: 'badge-purple' }
+  };
+  const ERRORS = {
+    no_key: L('AI is not connected. Add OPENAI_API_KEY to the .env file and restart the server.', 'AI जुड़ा नहीं है। .env फ़ाइल में OPENAI_API_KEY जोड़ें और सर्वर फिर से शुरू करें।'),
+    empty_story: L('Please tell a little more about your day (at least one or two sentences).', 'कृपया अपने दिन के बारे में थोड़ा और बताइए (कम से कम एक-दो वाक्य)।'),
+    ai_failed: L('The AI could not respond right now. Please try again in a moment.', 'AI अभी जवाब नहीं दे पाया। कृपया थोड़ी देर में फिर कोशिश करें।'),
+    no_skills: L('We could not find clear skills yet. Describe real things you do: work at home, farm, shop, helping people.', 'अभी साफ़ कौशल नहीं मिले। असली काम बताइए: घर, खेत, दुकान, लोगों की मदद।')
+  };
+  const allBars = cards.map(c => ({ label: hi ? c.title_hi : c.title, value: c.kamai.fiveYearNet, base: false }))
+    .concat([{ label: hi ? baseline.title_hi : baseline.title, value: baseline.fiveYearNet, base: true }]);
+  const maxBar = Math.max(1, ...allBars.map(b => b.value));
+%>
+<%- include('partials/header', { pageTitle: L('Kaam Kahani – Find Your Skills', 'काम कहानी – अपने हुनर पहचानें') }) %>
+<%- include('partials/navbar', { activeTab: 'hunar' }) %>
+
+<style>
+  .hunar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.25rem; }
+  .hint-list { margin: 0 0 1rem; padding-left: 1.2rem; color: var(--text-muted); font-size: 0.9rem; display: grid; gap: 0.25rem; }
+  .story-box { width: 100%; min-height: 150px; font-size: 1rem; line-height: 1.5; resize: vertical; }
+  .story-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; margin-top: 0.75rem; }
+  .story-mic-btn.listening { background: var(--danger); border-color: var(--danger); color: #fff; }
+  .skill-chip { display: flex; gap: 0.6rem; align-items: flex-start; justify-content: space-between; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.65rem 0.8rem; background: var(--surface-alt); }
+  .skill-chip strong { display: block; color: var(--text-main); font-size: 0.95rem; }
+  .skill-chip q { color: var(--text-muted); font-size: 0.82rem; font-style: italic; }
+  .chip-remove { background: none; border: none; cursor: pointer; color: var(--text-light); font-size: 1rem; padding: 0 0.2rem; }
+  .ladder-card { display: flex; flex-direction: column; gap: 0.75rem; border-top: 4px solid var(--primary-light); padding: 1.25rem; }
+  .ladder-card.tag-surprise { border-top-color: #9333EA; }
+  .ladder-card.tag-vocational { border-top-color: var(--success); }
+  .ladder-card.tag-nonstem { border-top-color: var(--accent); }
+  .ladder-path { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; font-size: 0.8rem; color: var(--text-muted); }
+  .ladder-path span.node { background: var(--surface-alt); border: 1px solid var(--border); border-radius: 999px; padding: 0.15rem 0.55rem; }
+  .ladder-path span.node.target { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .fit-bar { height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; }
+  .fit-bar > div { height: 100%; background: var(--success); }
+  .why-box { background: var(--surface-alt); border-left: 3px solid var(--primary-light); padding: 0.6rem 0.75rem; font-size: 0.88rem; color: var(--text-main); border-radius: var(--radius-sm); }
+  .step-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.4rem; font-size: 0.85rem; }
+  .step-list li { display: flex; gap: 0.5rem; }
+  .step-num { flex: none; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--primary); color: #fff; font-size: 0.75rem; display: grid; place-items: center; }
+  .kamai-mini { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; font-size: 0.8rem; }
+  .kamai-mini div { background: var(--surface-alt); border-radius: var(--radius-sm); padding: 0.4rem 0.5rem; }
+  .kamai-mini b { display: block; font-size: 0.95rem; color: var(--text-main); }
+  .card-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: auto; }
+  .card-actions form { flex: 1; }
+  .card-actions .btn { width: 100%; }
+  .kamai-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .kamai-table th, .kamai-table td { text-align: left; padding: 0.55rem 0.5rem; border-bottom: 1px solid var(--border); }
+  .kamai-table tr.baseline td { color: var(--text-muted); font-style: italic; }
+  .table-scroll { overflow-x: auto; }
+  .soon-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; }
+  .soon-link { display: block; border: 1px dashed var(--border); border-radius: var(--radius-md); padding: 0.85rem; text-decoration: none; color: var(--text-main); }
+  .soon-link:hover { border-color: var(--primary-light); }
+  @media print {
+    .app-sidebar, .navbar, .mobile-bottom-nav, .site-footer, .offline-banner, .no-print { display: none !important; }
+    body.printing-passport main > *:not(#passport) { display: none !important; }
+  }
+</style>
+
+<div class="app-layout">
+  <%- include('partials/sidebar', { activeTab: 'hunar' }) %>
+
+  <main class="app-content">
+    <div class="lms-header-box">
+      <div class="lms-header-info">
+        <h1 class="lms-title"><%= L('Kaam Kahani – Your Skills Story', 'काम कहानी – आपके हुनर की कहानी') %></h1>
+        <p class="lms-subtitle"><%= L('Tell us about your day in your own words. AI finds the skills you already have and shows where they can take you.', 'अपने दिन के बारे में अपनी भाषा में बताइए। AI आपके मौजूदा हुनर पहचानकर दिखाएगा कि वे आपको कहाँ तक ले जा सकते हैं।') %></p>
+      </div>
+      <span class="badge <%= aiProvider ? 'badge-success' : 'badge-warning' %>">
+        <%= aiProvider ? ('🤖 AI: ' + (aiProvider === 'openai' ? 'ChatGPT' : 'Gemini')) : L('⚠️ AI not connected', '⚠️ AI जुड़ा नहीं') %>
+      </span>
+    </div>
+
+    <% if (!aiProvider) { %>
+      <div class="demo-disclaimer-pill" style="margin-bottom: 1rem;">⚠️ <%= ERRORS.no_key %></div>
+    <% } %>
+    <% if (error && ERRORS[error] && error !== 'no_key') { %>
+      <div class="demo-disclaimer-pill" style="margin-bottom: 1rem; background: #FEE2E2; color: #991B1B;">⚠️ <%= ERRORS[error] %></div>
+    <% } %>
+
+    <!-- 1. Story input -->
+    <section class="card" style="padding: 1.5rem; margin-bottom: 1.5rem;" id="story">
+      <h2 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem;">🎤 <%= L('Tell your story', 'अपनी कहानी बताइए') %></h2>
+      <ul class="hint-list">
+        <li><%= L('What do you do on a normal day – at home, in the field, at a shop?', 'एक आम दिन में आप क्या करते हैं – घर, खेत या दुकान पर?') %></li>
+        <li><%= L('What do people ask you to help with?', 'लोग आपसे किस काम में मदद मांगते हैं?') %></li>
+        <li><%= L('What do you enjoy doing the most?', 'आपको सबसे ज़्यादा क्या करना अच्छा लगता है?') %></li>
+        <li><%= L('Anything that limits you – need to earn soon, cannot move away?', 'कोई मजबूरी – जल्दी कमाना है, घर से दूर नहीं जा सकते?') %></li>
+      </ul>
+
+      <form action="/hunar/analyze" method="POST" id="story-form">
+        <textarea name="story" id="story-input" class="form-control story-box" maxlength="4000"
+          placeholder="<%= L('Speak or type here...', 'यहाँ बोलिए या लिखिए...') %>"><%= profile ? profile.story : '' %></textarea>
+
+        <div class="story-actions">
+          <button type="button" class="btn btn-secondary story-mic-btn" id="mic-btn">🎤 <span id="mic-label"><%= L('Speak', 'बोलिए') %></span></button>
+          <button type="button" class="btn btn-sm btn-outline-primary" id="demo-story-btn">⚡ <%= L('Use demo story', 'डेमो कहानी') %></button>
+          <label style="display: flex; gap: 0.4rem; align-items: center; font-size: 0.88rem; color: var(--text-muted);">
+            <input type="checkbox" name="needs_income_soon" <%= (profile && profile.constraints.needs_income_soon) ? 'checked' : '' %>>
+            <%= L('I need to start earning soon', 'मुझे जल्दी कमाना शुरू करना है') %>
+          </label>
+          <button type="submit" class="btn btn-primary" id="analyze-btn" style="margin-left: auto;" <%= aiProvider ? '' : 'disabled' %>>
+            ✨ <%= L('Find my skills', 'मेरे हुनर खोजें') %>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <% if (profile && profile.skills.length > 0) { %>
+      <!-- 2. Skill Passport -->
+      <section class="card" style="padding: 1.5rem; margin-bottom: 1.5rem;" id="passport">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+          <div>
+            <h2 style="font-size: 1.15rem; font-weight: 700;">🪪 <%= L('Skill Passport', 'स्किल पासपोर्ट') %> – <%= user.name %></h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted);"><%= L('Every skill is backed by your own words. Remove anything that is not right.', 'हर हुनर आपके अपने शब्दों पर आधारित है। जो सही न हो उसे हटा दें।') %></p>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-primary no-print" id="print-passport">🖨️ <%= L('Print passport', 'पासपोर्ट प्रिंट करें') %></button>
+        </div>
+        <div class="hunar-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.6rem;">
+          <% profile.skills.forEach(s => { const sk = skillsCatalog.find(x => x.id === s.id); if (!sk) return; %>
+            <div class="skill-chip">
+              <div>
+                <strong>✅ <%= hi ? sk.name_hi : sk.name %></strong>
+                <% if (s.evidence) { %><q><%= s.evidence %></q><% } %>
+              </div>
+              <form action="/hunar/skill/remove" method="POST" class="no-print">
+                <input type="hidden" name="skill_id" value="<%= s.id %>">
+                <button type="submit" class="chip-remove" title="<%= L('Remove', 'हटाएं') %>">✕</button>
+              </form>
+            </div>
+          <% }); %>
+        </div>
+        <% if (profile.interests && profile.interests.length) { %>
+          <p style="margin-top: 0.9rem; font-size: 0.85rem; color: var(--text-muted);">💡 <%= L('Interests', 'रुचियाँ') %>: <%= profile.interests.join(', ') %></p>
+        <% } %>
+      </section>
+
+      <!-- 3. Career Ladders -->
+      <section style="margin-bottom: 1.5rem;" id="ladders">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.9rem;">
+          <div>
+            <h2 style="font-size: 1.15rem; font-weight: 700;">🪜 <%= L('Where your skills can take you', 'आपका हुनर आपको कहाँ ले जा सकता है') %></h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted);"><%= L('Careers built from what you already do – including ones you may never have heard of.', 'आप जो पहले से करते हैं उससे बने करियर – ऐसे भी जिनके बारे में शायद आपने सुना न हो।') %></p>
+          </div>
+          <form action="/hunar/surprise" method="POST">
+            <button type="submit" class="btn btn-accent">🎲 <%= L('Surprise me', 'कुछ नया दिखाओ') %></button>
+          </form>
+        </div>
+
+        <% if (cards.length === 0) { %>
+          <div class="card" style="padding: 1rem;"><%= L('Add a few more details to your story to see career paths.', 'करियर रास्ते देखने के लिए अपनी कहानी में थोड़ा और जोड़ें।') %></div>
+        <% } %>
+
+        <div class="hunar-grid">
+          <% cards.forEach(c => { const tag = TAGS[c.tag]; const chosen = profile.target_career === c.id; %>
+            <article class="card ladder-card tag-<%= c.tag %>">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
+                <span class="badge <%= tag.cls %>"><%= hi ? tag.hi : tag.en %></span>
+                <span style="font-size: 0.8rem; color: var(--text-muted);"><%= c.fitPercent %>% <%= L('match', 'मेल') %></span>
+              </div>
+              <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--primary);"><%= hi ? c.title_hi : c.title %></h3>
+              <div class="fit-bar"><div style="width: <%= c.fitPercent %>%"></div></div>
+
+              <% if (c.path.length > 1) { %>
+                <div class="ladder-path">
+                  <% c.path.forEach((p, i) => { %>
+                    <span class="node <%= i === c.path.length - 1 ? 'target' : '' %>"><%= hi ? p.title_hi : p.title %></span>
+                    <% if (i < c.path.length - 1) { %><span>➜</span><% } %>
+                  <% }); %>
+                </div>
+              <% } %>
+
+              <% if (c.why) { %><div class="why-box">💬 <%= c.why %></div><% } %>
+
+              <div style="font-size: 0.82rem;">
+                <% if (c.matchedSkills.length) { %>
+                  <div><strong><%= L('You already have:', 'आपके पास पहले से:') %></strong> <%= c.matchedSkills.map(s => hi ? s.name_hi : s.name).join(', ') %></div>
+                <% } %>
+                <% if (c.skillsToLearn.length) { %>
+                  <div style="color: var(--text-muted);"><strong><%= L('To learn:', 'सीखना है:') %></strong> <%= c.skillsToLearn.map(s => hi ? s.name_hi : s.name).join(', ') %></div>
+                <% } %>
+              </div>
+
+              <ol class="step-list">
+                <% c.steps.forEach((st, i) => { %>
+                  <li><span class="step-num"><%= i + 1 %></span><span><%= hi ? st.title_hi : st.title %></span></li>
+                <% }); %>
+              </ol>
+              <% if (c.exams.length) { %>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">📝 <%= L('Exams', 'परीक्षाएँ') %>: <%= c.exams.join(', ') %></div>
+              <% } %>
+
+              <div class="kamai-mini">
+                <div><%= L('First income', 'पहली कमाई') %><b><%= c.kamai.earnFromMonth %> <%= L('months', 'महीने') %></b></div>
+                <div><%= L('Training cost', 'प्रशिक्षण खर्च') %><b><%= c.kamai.cost === 0 ? L('Free', 'मुफ़्त') : inr(c.kamai.cost) %></b></div>
+                <div style="grid-column: span 2;"><%= L('Monthly income later', 'बाद में मासिक कमाई') %><b><%= inr(c.kamai.salaryMin) %> – <%= inr(c.kamai.salaryMax) %></b></div>
+              </div>
+
+              <div class="card-actions">
+                <form action="/hunar/choose" method="POST">
+                  <input type="hidden" name="career_id" value="<%= c.id %>">
+                  <button type="submit" class="btn btn-sm <%= chosen ? 'btn-secondary' : 'btn-outline-primary' %>"><%= chosen ? L('✓ My path', '✓ मेरा रास्ता') : L('Choose this path', 'यह रास्ता चुनें') %></button>
+                </form>
+                <form action="/hunar/parent-pitch" method="POST" class="pitch-form">
+                  <input type="hidden" name="career_id" value="<%= c.id %>">
+                  <button type="submit" class="btn btn-sm btn-primary" <%= aiProvider ? '' : 'disabled' %>>📣 <%= L('Tell my parents', 'माता-पिता को बताएं') %></button>
+                </form>
+              </div>
+              <a href="<%= c.source.url %>" target="_blank" rel="noopener" style="font-size: 0.75rem; color: var(--text-light);">🔗 <%= L('Source', 'स्रोत') %>: <%= c.source.label %></a>
+            </article>
+          <% }); %>
+        </div>
+      </section>
+
+      <!-- 4. Kamai Calculator -->
+      <% if (cards.length) { %>
+        <section class="card" style="padding: 1.5rem; margin-bottom: 1.5rem;" id="kamai">
+          <h2 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.25rem;">💰 <%= L('Kamai Calculator – money over 5 years', 'कमाई कैलकुलेटर – 5 साल में कमाई') %></h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;"><%= L('Total earnings in the next 5 years minus training cost, compared with a regular degree.', 'अगले 5 साल की कुल कमाई में से प्रशिक्षण खर्च घटाकर, सामान्य डिग्री से तुलना।') %></p>
+
+          <svg viewBox="0 0 640 <%= allBars.length * 44 + 10 %>" width="100%" role="img" aria-label="<%= L('Five year earnings comparison', 'पाँच साल की कमाई की तुलना') %>" style="max-width: 760px; margin-bottom: 1rem;">
+            <% allBars.forEach((b, i) => { const w = Math.max(2, Math.round(Math.max(0, b.value) / maxBar * 330)); const y = i * 44 + 6; %>
+              <text x="0" y="<%= y + 20 %>" font-size="12" fill="currentColor" style="color: var(--text-main);"><%= b.label.length > 34 ? b.label.slice(0, 33) + '…' : b.label %></text>
+              <rect x="230" y="<%= y + 6 %>" width="<%= w %>" height="22" rx="4" fill="<%= b.base ? '#94A3B8' : '#10B981' %>"></rect>
+              <text x="<%= 236 + w %>" y="<%= y + 22 %>" font-size="12" font-weight="700" fill="currentColor" style="color: var(--text-main);"><%= inr(b.value) %></text>
+            <% }); %>
+          </svg>
+
+          <div class="table-scroll">
+            <table class="kamai-table">
+              <thead>
+                <tr>
+                  <th><%= L('Path', 'रास्ता') %></th>
+                  <th><%= L('First income', 'पहली कमाई') %></th>
+                  <th><%= L('Training cost', 'खर्च') %></th>
+                  <th><%= L('First-year income / month', 'पहले साल / महीना') %></th>
+                  <th><%= L('Later / month', 'बाद में / महीना') %></th>
+                  <th><%= L('5-year total', '5 साल कुल') %></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% cards.forEach(c => { %>
+                  <tr>
+                    <td><strong><%= hi ? c.title_hi : c.title %></strong></td>
+                    <td><%= L('after', '') %> <%= c.kamai.earnFromMonth %> <%= L('months', 'महीने बाद') %></td>
+                    <td><%= c.kamai.cost === 0 ? L('Free', 'मुफ़्त') : inr(c.kamai.cost) %></td>
+                    <td><%= inr(c.kamai.earlyIncome) %></td>
+                    <td><%= inr(c.kamai.salaryMin) %> – <%= inr(c.kamai.salaryMax) %></td>
+                    <td><strong><%= inr(c.kamai.fiveYearNet) %></strong></td>
+                  </tr>
+                <% }); %>
+                <tr class="baseline">
+                  <td><%= hi ? baseline.title_hi : baseline.title %></td>
+                  <td><%= L('after', '') %> <%= baseline.earnFromMonth %> <%= L('months', 'महीने बाद') %></td>
+                  <td><%= inr(baseline.cost) %></td>
+                  <td><%= inr(baseline.earlyIncome) %></td>
+                  <td><%= inr(baseline.salaryMin) %> – <%= inr(baseline.salaryMax) %></td>
+                  <td><%= inr(baseline.fiveYearNet) %></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.75rem;">ℹ️ <%= L('Indicative figures from official sources (linked on each card). Real income depends on place and effort – verify before deciding.', 'आधिकारिक स्रोतों पर आधारित अनुमानित आंकड़े (हर कार्ड पर लिंक)। असली कमाई जगह और मेहनत पर निर्भर है – निर्णय से पहले जांच लें।') %></p>
+        </section>
+      <% } %>
+    <% } %>
+
+    <!-- 5. Coming soon -->
+    <section class="card no-print" style="padding: 1.25rem;">
+      <h2 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">🚧 <%= L('Coming soon', 'जल्द आ रहा है') %></h2>
+      <div class="soon-grid">
+        <a class="soon-link" href="/hunar/teacher">🧑‍🏫 <strong><%= L('Teacher Talent Radar', 'शिक्षक टैलेंट रडार') %></strong></a>
+        <a class="soon-link" href="/hunar/opportunities">📬 <strong><%= L('Opportunity Inbox', 'अवसर इनबॉक्स') %></strong></a>
+        <a class="soon-link" href="/hunar/badges">🏅 <strong><%= L('Proof-of-Skill Badges', 'कौशल प्रमाण बैज') %></strong></a>
+        <a class="soon-link" href="/hunar/stories">🎙️ <strong><%= L('Didi / Bhaiya Stories', 'दीदी / भैया की कहानियां') %></strong></a>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="/js/voice.js"></script>
+<script>
+  (function () {
+    const isHindi = <%- JSON.stringify(hi) %>;
+    const input = document.getElementById('story-input');
+    const micBtn = document.getElementById('mic-btn');
+    const micLabel = document.getElementById('mic-label');
+    let baseText = '';
+
+    micBtn.addEventListener('click', () => {
+      baseText = input.value ? input.value.trim() + ' ' : '';
+      window.EduVoice.toggleListening((text, isFinal) => {
+        input.value = baseText + text;
+        if (isFinal) baseText = input.value.trim() + ' ';
+      }, (listening) => {
+        micBtn.classList.toggle('listening', listening);
+        micLabel.textContent = listening ? (isHindi ? 'रोकें' : 'Stop') : (isHindi ? 'बोलिए' : 'Speak');
+      });
+    });
+
+    const DEMO = {
+      en: "I wake up at 5 and help my father in our paddy field. When the borewell pump stops, people in the village call me because I can open the motor, check the wiring and fix it with a screwdriver. In the evening I sit at our small kirana shop and keep the hisab of who owes how much in a notebook. I also teach my younger sister maths. Our family needs money, so I want to start earning soon, but I cannot go too far from home.",
+      hi: "मैं सुबह 5 बजे उठकर पापा के साथ धान के खेत में काम करता हूँ। जब बोरवेल का पंप बंद हो जाता है तो गांव वाले मुझे बुलाते हैं, क्योंकि मैं मोटर खोलकर तार चेक करता हूँ और पेचकस से ठीक कर देता हूँ। शाम को हमारी छोटी किराना दुकान पर बैठता हूँ और कॉपी में हिसाब रखता हूँ कि किसका कितना उधार है। मैं अपनी छोटी बहन को गणित भी पढ़ाता हूँ। घर में पैसों की ज़रूरत है, इसलिए मुझे जल्दी कमाना शुरू करना है, लेकिन मैं घर से ज़्यादा दूर नहीं जा सकता।"
+    };
+    document.getElementById('demo-story-btn').addEventListener('click', () => {
+      input.value = isHindi ? DEMO.hi : DEMO.en;
+      input.focus();
+    });
+
+    const showWorking = (btn, text) => { btn.disabled = true; btn.textContent = text; };
+    document.getElementById('story-form').addEventListener('submit', () => {
+      showWorking(document.getElementById('analyze-btn'), isHindi ? '⏳ AI आपकी कहानी पढ़ रहा है...' : '⏳ AI is reading your story...');
+    });
+    document.querySelectorAll('.pitch-form').forEach(f => f.addEventListener('submit', () => {
+      showWorking(f.querySelector('button'), isHindi ? '⏳ संदेश बन रहा है...' : '⏳ Writing message...');
+    }));
+
+    const printBtn = document.getElementById('print-passport');
+    if (printBtn) {
+      printBtn.addEventListener('click', () => {
+        document.body.classList.add('printing-passport');
+        window.print();
+      });
+      window.addEventListener('afterprint', () => document.body.classList.remove('printing-passport'));
+    }
+  })();
+</script>
+
+<%- include('partials/bottom-nav', { activeTab: 'hunar' }) %>
+<%- include('partials/footer') %>
